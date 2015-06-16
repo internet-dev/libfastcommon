@@ -25,18 +25,25 @@ HEADER_FILES = common_define.h hash.h chain.h logger.h base64.h \
 ALL_OBJS = $(STATIC_OBJS) $(FAST_SHARED_OBJS)
 
 ALL_PRGS = 
-SHARED_LIBS = libfastcommon.so
-STATIC_LIBS = libfastcommon.a
+LIBNAME = libfastcommon
+SHARED_LIBS = $(LIBNAME).so
+STATIC_LIBS = $(LIBNAME).a
 ALL_LIBS = $(SHARED_LIBS) $(STATIC_LIBS)
+
+uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo false')
+## create dynamic (shared) library on Darwin (base OS for MacOSX and IOS)
+ifeq (Darwin, $(uname_S))
+	SHARED_LIBS = $(LIBNAME).dylib
+endif
 
 PREFIX ?=/usr/local
 INSTALL_LIB = $(PREFIX)/lib
 INSTALL_INCLUDE = $(PREFIX)/include/fastcommon
 
 all: $(ALL_OBJS) $(ALL_PRGS) $(ALL_LIBS)
-libfastcommon.so:
+$(SHARED_LIBS):
 	$(COMPILE) -o $@ $< -shared $(FAST_SHARED_OBJS)
-libfastcommon.a: $(FAST_STATIC_OBJS)
+$(STATIC_LIBS): $(FAST_STATIC_OBJS)
 	ar rcs $@ $<
 .o:
 	$(COMPILE) -o $@ $<  $(STATIC_OBJS) $(LIB_PATH) $(INC_PATH)

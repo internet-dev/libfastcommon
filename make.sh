@@ -72,7 +72,7 @@ if [ "$uname" = "Linux" ]; then
 elif [ "$uname" = "FreeBSD" ] || [ "$uname" = "Darwin" ]; then
   CFLAGS="$CFLAGS -DOS_FREEBSD -DIOEVENT_USE_KQUEUE"
   if [ "$uname" = "Darwin" ]; then
-    CFLAGS="$CFLAGS -DDARWIN"
+    CFLAGS="$CFLAGS -DDARWIN -ldl"
   fi
 elif [ "$uname" = "SunOS" ]; then
   CFLAGS="$CFLAGS -DOS_SUNOS -D_THREAD_SAFE -DIOEVENT_USE_PORT"
